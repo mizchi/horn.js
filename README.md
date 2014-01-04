@@ -11,13 +11,17 @@ inspired by angular, bakcobne and knockout.
 - simple list view implementation
 - less code, more powerful
 
-## Requirement
+## Requirements
 
 - jQuery
 
 ## Install
 
-`bower install horn`
+User bower
+
+```
+$ bower install horn
+```
 
 ## Example
 
@@ -49,7 +53,8 @@ Horn.registerTemplate """
 class Status extends Horn.View
   templateName: 'my-status'
   addMoney: ->
-    @money += 10
+    @money += 10 # data-attrs generate getters.
+    # data-text='money' change view soon.
 
   toggleShowAddMoney: ->
     @showAddMoney = !@showAddMoney
