@@ -1,0 +1,29 @@
+{
+  "name": "horn",
+  "version": "0.0.2",
+  "main": "dist/horn.js",
+  "authors": [
+    "Koutarou Chikuba <miz404@gmail.com>"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "jquery": "*"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "homepage": "https://github.com/mizchi/horn.js",
+  "_release": "0.0.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.0.2",
+    "commit": "0fc1bfa36960cea6fef22503bbb62fff43db3c27"
+  },
+  "_source": "git://github.com/mizchi/horn.js.git",
+  "_target": "*",
+  "_originalSource": "horn"
+}

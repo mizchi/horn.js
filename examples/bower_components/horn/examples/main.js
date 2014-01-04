@@ -4,17 +4,6 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  Horn.addDirective("data-click-with-trigger", function(view) {
-    var $el,
-      _this = this;
-    $el = view.$("[data-click-with-trigger]");
-    return $el.on('click', function(e) {
-      var eventName;
-      eventName = $(e.target).data('click-with-trigger');
-      return view.trigger(eventName);
-    });
-  });
-
   Horn.registerTemplate("<div\n  data-template-name=\"my-status\"\n  data-attrs=\"name, money, showAddMoney\">\n\n  <span data-text=\"name\">NO NAME</span>\n  <span data-text=\"money\">0</span>\n  <button data-click-with-trigger=\"update\">update</button>\n  <button data-click=\"toggleShowAddMoney\">toggle show add money</button>\n  <button data-visible=\"showAddMoney\" data-click=\"addMoney\">addMoney</button>\n</div>");
 
   Status = (function(_super) {

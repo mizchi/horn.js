@@ -1,0 +1,19 @@
+{
+  "name": "examples",
+  "version": "0.0.2",
+  "homepage": "https://github.com/mizchi/horn.js",
+  "authors": [
+    "Koutarou Chikuba <miz404@gmail.com>"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "horn": "*"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

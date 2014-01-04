@@ -1,10 +1,3 @@
-# Define custom directive
-Horn.addDirective "data-click-with-trigger", (view) ->
-  $el = view.$("[data-click-with-trigger]")
-  $el.on 'click', (e) =>
-    eventName = $(e.target).data('click-with-trigger')
-    view.trigger eventName
-
 Horn.registerTemplate """
   <div
     data-template-name="my-status"
