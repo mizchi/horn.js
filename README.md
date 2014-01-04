@@ -75,18 +75,9 @@ $ ->
 
 See detail at examples.
 
-## View
+# API
 
-Backbone like API
-
-- View#$
-- View#on
-- View#off
-
-and others.
-
-
-## Default Directive
+## Horn
 
 Create your own directive via `Horn.addDirective`
 
@@ -96,7 +87,37 @@ Default has Knockout like API.
 - data-click
 - data-visible
 
-## Motivation
+## Horn.View
+
+Backbone like API
+
+- View#$(selector)
+- View#_$(selector) # cache result
+- View#on
+- View#off
+- View#trigger
+- View#attach(selector)
+- View#detach()
+- View#show()
+- View#hide()
+- View#remove()
+
+and others.
+
+## Horn.ListView
+
+ListView has all Horn.View API
+
+- ListView#size()
+- ListView#size(num)
+- ListView#addItem(item)
+- ListView#get(num)
+- ListView#toJSON()
+- ListView#update(items)
+
+Generate views as its size.
+
+# Motivation
 
 I used chaplin.js and Backbone.stickit for data bindings. In this style, I had to write many code even if I created simple view.
 I need simple extendable template with js mappings as less-code as I can. I don't need ajax wrapper nor mapping because REST API is enough for me to make application.
@@ -107,4 +128,6 @@ I need simple extendable template with js mappings as less-code as I can. I don'
 - Router and View instance mapping
 - Document
 - Test
+- AMD style
+- Register to bower
 - TODO MVC
