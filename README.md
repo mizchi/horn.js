@@ -3,7 +3,7 @@
 Fast and  simple reactive view framework.
 inspired by angular, bakcobne and knockout.
 
-## Feature
+## Features
 
 - angular like directive
 - knockout like data-bind
