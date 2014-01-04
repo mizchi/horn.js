@@ -1,7 +1,7 @@
 # Horn.js
 
 Fast and  simple reactive view framework.
-inspired by angular, bakcobne and knockout.
+inspired by angular, backbone and knockout.
 
 ## Features
 
