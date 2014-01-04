@@ -4,6 +4,8 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
+  Horn.registerTemplate("<div\n  data-template-name=\"my-status\"\n  data-attrs=\"name, money, showAddMoney\">\n\n  <span data-text=\"name\">NO NAME</span>\n  <span data-text=\"money\">0</span>\n  <button data-click-with-trigger=\"update\">update</button>\n  <button data-click=\"toggleShowAddMoney\">toggle show add money</button>\n  <button data-visible=\"showAddMoney\" data-click=\"addMoney\">addMoney</button>\n</div>");
+
   Status = (function(_super) {
     __extends(Status, _super);
 
@@ -43,9 +45,16 @@
   })(Horn.ListView);
 
   $(function() {
-    window.list = new StatusList;
-    list.attach('body');
-    return list.update([
+    var list, status;
+    status = new Status;
+    status.name = 'foo';
+    status.money = 0;
+    status.attach('body');
+    status.on('update', function() {
+      return console.log('updated');
+    });
+    list = new StatusList;
+    list.update([
       {
         name: 1
       }, {
@@ -54,6 +63,10 @@
         name: 3
       }
     ]);
+    list.addItem({
+      name: 4
+    });
+    return list.attach('body');
   });
 
 }).call(this);
