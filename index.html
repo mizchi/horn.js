@@ -1,0 +1,22 @@
+<html lang=ja>
+<head>
+  <meta charset="utf-8"/>
+  <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+  <script src="namari.js"></script>
+</head>
+<body>
+  <h1>test</h1>
+  <script id="my-template" type="text/template">
+    <div class="status"
+      data-container="status"
+      data-values="name, money"
+      data-require-functions="addMoney">
+
+      <span data-text="name"></span>
+      <span data-text="money"></span>
+      <button data-click-publish="update">addMoney</span>
+      <button data-click="addMoney">addMoney</span>
+    </div>
+  </script>
+</body>
+</html>
