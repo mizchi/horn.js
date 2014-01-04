@@ -1,7 +1,6 @@
 # Horn.js
 
-This is deadly simple reactive view framework.
-
+Fast and  simple reactive view framework.
 inspired by angular, bakcobne and knockout.
 
 ## Feature
@@ -135,3 +134,4 @@ I need simple extendable template with js mappings as less-code as I can. I don'
 - AMD style
 - Register to bower
 - TODO MVC
+- Benchmark
