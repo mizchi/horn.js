@@ -16,6 +16,10 @@ inspired by angular, bakcobne and knockout.
 
 - jQuery
 
+## Install
+
+`bower install horn`
+
 ## Example
 
 ```coffee-script
