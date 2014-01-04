@@ -77,7 +77,8 @@
     list.addItem({
       name: 4
     });
-    return list.attach('body');
+    list.attach('body');
+    return window.list = list;
   });
 
 }).call(this);

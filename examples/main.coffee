@@ -44,4 +44,5 @@ $ ->
   list.update [{name: 1},{name: 2},{name: 3}]
   list.addItem {name: 4}
   list.attach 'body'
+  window.list = list
 

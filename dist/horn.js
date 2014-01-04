@@ -22,6 +22,11 @@
       var _ref;
       return (_ref = this.$el).trigger.apply(_ref, arguments);
     },
+    publish: function() {
+      var args, event;
+      event = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+      return this.$el.trigger(event, args);
+    },
     on: function() {
       var _ref;
       return (_ref = this.$el).on.apply(_ref, arguments);
@@ -458,6 +463,14 @@
       }
     }
 
+    View.prototype.dispose = function() {
+      if (this.parent != null) {
+        this.parent.publish('child:disposed', this);
+      }
+      this.disposed = true;
+      return this.remove();
+    };
+
     View.prototype.property = function(key) {
       var orig;
       orig = this[key];
@@ -470,7 +483,10 @@
         set: function(v) {
           if (v !== this['_' + key]) {
             this['_' + key] = v;
-            return this.trigger("change:" + key);
+            this.trigger("change:" + key);
+            if (this.parent != null) {
+              return this.parent.publish('child:changed', this);
+            }
           }
         }
       });
@@ -495,8 +511,17 @@
     ListView.prototype.itemView = Horn.View;
 
     function ListView() {
+      var _this = this;
       this.$el = $("<" + this.className + ">");
       this.views = [];
+      this.on('child:disposed', function(e, view) {
+        var data, rejectIndex;
+        rejectIndex = _this.views.indexOf(view);
+        data = _this.toJSON();
+        data.splice(rejectIndex, 1);
+        _this.views.splice(rejectIndex, 1);
+        return _this.update(data);
+      });
     }
 
     ListView.prototype.addItem = function(item) {
@@ -505,6 +530,7 @@
         item = {};
       }
       view = new this.itemView;
+      view.parent = this;
       for (k in item) {
         v = item[k];
         view[k] = v;

@@ -11,6 +11,8 @@ Horn.Utils.extend = (obj, mixin) ->
 Horn.Traits.Dispatchable =
   trigger: -> @$el.trigger arguments...
 
+  publish: (event, args...) -> @$el.trigger(event, args)
+
   on: -> @$el.on arguments...
 
   off: -> @$el.off arguments...
@@ -251,6 +253,11 @@ class Horn.View
     for attr in @attrs then @property attr
     for name, func of Horn.directives then func @
 
+  dispose: ->
+    if @parent? then @parent.publish('child:disposed', @)
+    @disposed = true
+    @remove()
+
   property: (key) ->
     orig = @[key]
     delete @[key]
@@ -261,6 +268,8 @@ class Horn.View
         if v isnt @['_'+key]
           @['_' + key] = v
           @trigger "change:#{key}"
+          if @parent? then @parent.publish('child:changed', @)
+
     @['_'+key] = orig ? null
 
 {extend} = Horn.Utils
@@ -276,8 +285,19 @@ class Horn.ListView
     @$el = $("<#{@className}>")
     @views = []
 
+    @on 'child:disposed', (e, view) =>
+      rejectIndex = @views.indexOf(view)
+
+      data = @toJSON()
+      data.splice(rejectIndex, 1)
+      @views.splice(rejectIndex, 1)
+
+      @update data
+
   addItem: (item = {}) ->
     view = new @itemView
+    view.parent = @
+
     for k, v of item
       view[k] = v
     @views.push view

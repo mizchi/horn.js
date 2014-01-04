@@ -11,8 +11,19 @@ class Horn.ListView
     @$el = $("<#{@className}>")
     @views = []
 
+    @on 'child:disposed', (e, view) =>
+      rejectIndex = @views.indexOf(view)
+
+      data = @toJSON()
+      data.splice(rejectIndex, 1)
+      @views.splice(rejectIndex, 1)
+
+      @update data
+
   addItem: (item = {}) ->
     view = new @itemView
+    view.parent = @
+
     for k, v of item
       view[k] = v
     @views.push view

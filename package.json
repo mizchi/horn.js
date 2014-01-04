@@ -11,5 +11,8 @@
   "devDependencies": {
     "grunt-contrib-coffee": "~0.8.0",
     "grunt": "~0.4.2"
+  },
+  "dependencies": {
+    "grunt-contrib-watch": "~0.5.3"
   }
 }
