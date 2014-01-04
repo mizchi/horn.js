@@ -3,6 +3,8 @@
 Fast and  simple reactive view framework.
 inspired by angular, backbone and knockout.
 
+![](http://upload.wikimedia.org/wikipedia/commons/5/57/Narwal_brehm.jpg)
+
 ## Features
 
 - angular like directive
