@@ -88,17 +88,6 @@
     return _results;
   });
 
-  Horn.addDirective("data-click-with-trigger", function(view) {
-    var $el,
-      _this = this;
-    $el = view._$("[data-click-with-trigger]");
-    return $el.on('click', function(e) {
-      var eventName;
-      eventName = $(e.target).data('click-with-trigger');
-      return view.trigger(eventName);
-    });
-  });
-
   Dispatchable = {
     trigger: function() {
       var _ref;

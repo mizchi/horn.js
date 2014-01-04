@@ -37,12 +37,6 @@ Horn.addDirective "data-visible", (view) ->
         if view[attr] then $el.show() else $el.hide()
     view.on "change:#{attr}", update
 
-Horn.addDirective "data-click-with-trigger", (view) ->
-  $el = view._$("[data-click-with-trigger]")
-  $el.on 'click', (e) =>
-    eventName = $(e.target).data('click-with-trigger')
-    view.trigger eventName
-
 Dispatchable =
   trigger: -> @$el.trigger arguments...
 
