@@ -22,11 +22,12 @@ module.exports = (grunt) ->
       compile:
         files:
           'dist/horn.js': [
-            "src/initialize.coffee"
-            "src/traits.coffee"
             "src/horn.coffee"
-            "src/view.coffee"
-            "src/list-view.coffee"
+            "src/horn/utils.coffee"
+            "src/horn/traits/*.coffee"
+            "src/horn/directive.coffee"
+            "src/horn/view.coffee"
+            "src/horn/list-view.coffee"
           ]
 
   grunt.registerTask "run", ["coffee","connect", "watch:coffee"]
