@@ -99,7 +99,8 @@ Default has Knockout like API.
 
 ## Horn.View
 
-Backbone like API
+Backbone.View like API
+Clone of Backbone.Events API
 
 - View#$(selector)
 - View#_$(selector) # cache result
