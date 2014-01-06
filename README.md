@@ -89,18 +89,28 @@ See detail at examples.
 
 ## Horn
 
-Create your own directive via `Horn.addDirective`
+- Horn.registerTemplate(templateString)
+- Horn.addDirective(name, fn)
+- Horn.addDirectiveByEachElement(name, fn)
+- Horn.addDirectiveByEachValue(name, fn)
 
-Default has Knockout like API.
+## Default directives
 
 - data-text
 - data-click
 - data-visible
 
+Create your own custom directive via `Horn.addDirective` family
+For example, `data-click` is defined like this.
+
+    Horn.addDirectiveByEachElement "data-click", (view, $el, val) ->
+      $el.on 'click', (view[val].bind view)
+
+
 ## Horn.View
 
 Backbone.View like API
-Clone of Backbone.Events API
+This has clone of Backbone.Events API
 
 - View#$(selector)
 - View#_$(selector) # cache result
@@ -112,8 +122,6 @@ Clone of Backbone.Events API
 - View#show()
 - View#hide()
 - View#remove()
-
-and others.
 
 ## Horn.ListView
 
@@ -140,6 +148,4 @@ I need simple extendable template with js mappings as less-code as I can. I don'
 - Document
 - Test
 - AMD style
-- Register to bower
-- TODO MVC
 - Benchmark
