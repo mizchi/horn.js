@@ -19,31 +19,6 @@
 
   Horn.registerTemplate("<div\n  data-template-name=\"status\"\n  data-attrs=\"name, money, showAddMoney\">\n\n  <span data-text=\"name\">NO NAME</span>\n  <span data-text=\"money\">0</span>\n  <button data-click-with-trigger=\"update\">update</button>\n  <button data-click=\"dispose\">dispose</button>\n  <button data-click=\"toggleShowAddMoney\">toggle show add money</button>\n  <button data-visible=\"showAddMoney\" data-click=\"addMoney\">addMoney</button>\n</div>");
 
-  Horn.addDirectiveByEachElement("data-view", function(view, $el, val) {
-    var Cls, cv, data, propertyName, templateName, viewNames, _results;
-    viewNames = view.$el.attr('data-views').replace(/\s/g, '').split(',');
-    data = (function() {
-      var key, obj, _i, _len, _ref, _ref1;
-      obj = {};
-      _ref = val.replace(/\s|\n/g, '').split(',');
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        key = _ref[_i];
-        _ref1 = key.split(':'), key = _ref1[0], val = _ref1[1];
-        obj[key] = val;
-      }
-      return obj;
-    })();
-    _results = [];
-    for (templateName in data) {
-      propertyName = data[templateName];
-      Cls = view.viewClassMapping[templateName]();
-      cv = new Cls;
-      cv.attach($el);
-      _results.push(this[propertyName] = cv);
-    }
-    return _results;
-  });
-
   Layout = (function(_super) {
     __extends(Layout, _super);
 
@@ -101,31 +76,12 @@
   })(Horn.ListView);
 
   $(function() {
-    var layout, list, status;
+    var layout;
     layout = new Layout;
     layout.attach('body');
-    status = new Status;
-    status.name = 'foo';
-    status.money = 0;
-    status.attach('body');
-    status.on('update', function() {
-      return console.log('updated');
-    });
-    list = new StatusList;
-    list.update([
-      {
-        name: 1
-      }, {
-        name: 2
-      }, {
-        name: 3
-      }
-    ]);
-    list.addItem({
-      name: 4
-    });
-    list.attach('body');
-    return window.list = list;
+    layout.status.name = 'foo';
+    layout.status.money = 0;
+    return layout.statusList.update([{}, {}, {}]);
   });
 
 }).call(this);

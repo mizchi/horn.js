@@ -247,6 +247,37 @@ Horn.addDirective "data-visible", (view) ->
         if view[attr] then $el.show() else $el.hide()
     view.on "change:#{attr}", update
 
+Horn.addDirectiveByEachElement "data-view", (view, $el, val) ->
+  viewNames = view.$el.attr('data-views').replace(/\s/g, '').split(',')
+  data = do ->
+    obj = {}
+    for key in val.replace(/\s|\n/g, '').split(',')
+      [key, val] = key.split(':')
+      obj[key] = val
+    obj
+
+  for templateName, propertyName of data
+    Cls = view.viewClassMapping[templateName]()
+    cv = new Cls
+    cv.attach $el
+    view[propertyName] = cv
+
+Horn.addDirectiveByEachElement "data-list-view", (view, $el, val) ->
+  viewNames = view.$el.attr('data-views').replace(/\s/g, '').split(',')
+  data = do ->
+    obj = {}
+    for key in val.replace(/\s|\n/g, '').split(',')
+      [key, val] = key.split(':')
+      obj[key] = val
+    obj
+
+  for templateName, propertyName of data
+    Cls = view.viewClassMapping[templateName]()
+    cv = new class extends Horn.ListView
+      itemView: Cls
+    cv.attach $el
+    view[propertyName] = cv
+
 {extend} = Horn.Utils
 # View class
 class Horn.View
@@ -260,9 +291,8 @@ class Horn.View
     for attr in @attrs then @property attr
 
     # reject unused directive
-    for name, func of Horn.directives
-      if Horn.raw_templates[@templateName].indexOf(name) > -1
-        func @
+    for name, func of Horn.directives when Horn.raw_templates[@templateName].indexOf(name) > -1
+      func @
 
   dispose: ->
     if @parent? then @parent.trigger 'child:disposed', @

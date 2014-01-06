@@ -1,6 +1,8 @@
 (function() {
   var Events, array, eventSplitter, eventsApi, extend, implementation, listenMethods, method, push, slice, splice, triggerEvents, _fn, _once,
-    __slice = [].slice;
+    __slice = [].slice,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   window.Horn = function() {};
 
@@ -395,6 +397,68 @@
         })();
         return view.on("change:" + attr, update);
       })(attr));
+    }
+    return _results;
+  });
+
+  Horn.addDirectiveByEachElement("data-view", function(view, $el, val) {
+    var Cls, cv, data, propertyName, templateName, viewNames, _results;
+    viewNames = view.$el.attr('data-views').replace(/\s/g, '').split(',');
+    data = (function() {
+      var key, obj, _i, _len, _ref, _ref1;
+      obj = {};
+      _ref = val.replace(/\s|\n/g, '').split(',');
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        key = _ref[_i];
+        _ref1 = key.split(':'), key = _ref1[0], val = _ref1[1];
+        obj[key] = val;
+      }
+      return obj;
+    })();
+    _results = [];
+    for (templateName in data) {
+      propertyName = data[templateName];
+      Cls = view.viewClassMapping[templateName]();
+      cv = new Cls;
+      cv.attach($el);
+      _results.push(view[propertyName] = cv);
+    }
+    return _results;
+  });
+
+  Horn.addDirectiveByEachElement("data-list-view", function(view, $el, val) {
+    var Cls, cv, data, propertyName, templateName, viewNames, _ref, _results;
+    viewNames = view.$el.attr('data-views').replace(/\s/g, '').split(',');
+    data = (function() {
+      var key, obj, _i, _len, _ref, _ref1;
+      obj = {};
+      _ref = val.replace(/\s|\n/g, '').split(',');
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        key = _ref[_i];
+        _ref1 = key.split(':'), key = _ref1[0], val = _ref1[1];
+        obj[key] = val;
+      }
+      return obj;
+    })();
+    _results = [];
+    for (templateName in data) {
+      propertyName = data[templateName];
+      Cls = view.viewClassMapping[templateName]();
+      cv = new ((function(_super) {
+        __extends(_Class, _super);
+
+        function _Class() {
+          _ref = _Class.__super__.constructor.apply(this, arguments);
+          return _ref;
+        }
+
+        _Class.prototype.itemView = Cls;
+
+        return _Class;
+
+      })(Horn.ListView));
+      cv.attach($el);
+      _results.push(view[propertyName] = cv);
     }
     return _results;
   });

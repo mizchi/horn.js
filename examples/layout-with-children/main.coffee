@@ -30,21 +30,6 @@ Horn.registerTemplate """
   </div>
 """
 
-Horn.addDirectiveByEachElement "data-view", (view, $el, val) ->
-  viewNames = view.$el.attr('data-views').replace(/\s/g, '').split(',')
-  data = do ->
-    obj = {}
-    for key in val.replace(/\s|\n/g, '').split(',')
-      [key, val] = key.split(':')
-      obj[key] = val
-    obj
-
-  for templateName, propertyName of data
-    Cls = view.viewClassMapping[templateName]()
-    cv = new Cls
-    cv.attach $el
-    @[propertyName] = cv
-
 class Layout extends Horn.View
   templateName: 'layout'
   viewClassMapping:
@@ -64,19 +49,6 @@ class StatusList extends Horn.ListView
 $ ->
   layout = new Layout
   layout.attach 'body'
-
-  # View
-  status = new Status
-  status.name = 'foo'
-  status.money = 0
-
-  status.attach 'body'
-  status.on 'update', -> console.log 'updated'
-
-  # ListView
-  list = new StatusList
-  list.update [{name: 1},{name: 2},{name: 3}]
-  list.addItem {name: 4}
-  list.attach 'body'
-  window.list = list
-
+  layout.status.name = 'foo'
+  layout.status.money = 0
+  layout.statusList.update [{}, {}, {}]
