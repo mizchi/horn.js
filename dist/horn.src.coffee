@@ -216,17 +216,26 @@ Horn.directives = {}
 Horn.addDirective = (name, fn) ->
   Horn.directives[name] = fn
 
-# === Defaut Directives ===
-Horn.addDirective "data-text", (view) ->
-  for attr in view.attrs then do (attr) =>
-    $el = view._$("[data-text=#{attr}]")
-    view.on "change:#{attr}", => $el.text view[attr]
+Horn.addDirectiveByEachElement = (name, fn) ->
+  Horn.directives[name] = (view) ->
+    $el = view.$("[#{name}]")
+    $el.each (index) ->
+      $el = $(@)
+      val = $el.attr(name)
+      fn view, $el, val
 
-Horn.addDirective "data-click", (view) ->
-  $el = view._$("[data-click]")
-  $el.on 'click', (e) =>
-    funcName = $(e.target).data('click')
-    do view[funcName]
+Horn.addDirectiveByEachValue = (name, fn) ->
+  Horn.directives[name] = (view) ->
+    for attr in view.attrs then do (attr) =>
+      $el = view._$("[#{name}=#{attr}]")
+      fn view, $el, attr
+
+# === Defaut Directives ===
+Horn.addDirectiveByEachValue "data-text", (view, $el, val) ->
+  view.on "change:#{val}", => $el.text view[val]
+
+Horn.addDirectiveByEachElement "data-click", (view, $el, val) ->
+  $el.on 'click', (view[val].bind view)
 
 Horn.addDirective "data-visible", (view) ->
   for attr in view.attrs then do (attr) =>

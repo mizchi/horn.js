@@ -327,33 +327,46 @@
     return Horn.directives[name] = fn;
   };
 
-  Horn.addDirective("data-text", function(view) {
-    var attr, _i, _len, _ref, _results,
-      _this = this;
-    _ref = view.attrs;
-    _results = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      attr = _ref[_i];
-      _results.push((function(attr) {
-        var $el;
-        $el = view._$("[data-text=" + attr + "]");
-        return view.on("change:" + attr, function() {
-          return $el.text(view[attr]);
-        });
-      })(attr));
-    }
-    return _results;
+  Horn.addDirectiveByEachElement = function(name, fn) {
+    return Horn.directives[name] = function(view) {
+      var $el;
+      $el = view.$("[" + name + "]");
+      return $el.each(function(index) {
+        var val;
+        $el = $(this);
+        val = $el.attr(name);
+        return fn(view, $el, val);
+      });
+    };
+  };
+
+  Horn.addDirectiveByEachValue = function(name, fn) {
+    return Horn.directives[name] = function(view) {
+      var attr, _i, _len, _ref, _results,
+        _this = this;
+      _ref = view.attrs;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        attr = _ref[_i];
+        _results.push((function(attr) {
+          var $el;
+          $el = view._$("[" + name + "=" + attr + "]");
+          return fn(view, $el, attr);
+        })(attr));
+      }
+      return _results;
+    };
+  };
+
+  Horn.addDirectiveByEachValue("data-text", function(view, $el, val) {
+    var _this = this;
+    return view.on("change:" + val, function() {
+      return $el.text(view[val]);
+    });
   });
 
-  Horn.addDirective("data-click", function(view) {
-    var $el,
-      _this = this;
-    $el = view._$("[data-click]");
-    return $el.on('click', function(e) {
-      var funcName;
-      funcName = $(e.target).data('click');
-      return view[funcName]();
-    });
+  Horn.addDirectiveByEachElement("data-click", function(view, $el, val) {
+    return $el.on('click', view[val].bind(view));
   });
 
   Horn.addDirective("data-visible", function(view) {
