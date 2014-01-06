@@ -1,36 +1,15 @@
-Horn.Traits.Dispatchable =
-  trigger: -> @$el.trigger arguments...
-
-  publish: (event, args...) -> @$el.trigger(event, args)
-
-  on: ->
-    @$el.on arguments...
-
-  off: -> @$el.off arguments...
-
-  # expect Backbone.Model
-  observe: (first, second, third) ->
-    if (typeof third) is 'function'
-      model = first
-      key = first
-      callback = third
-    else if @model?
-      model = @model
-      key = first
-      callback = second
-    else
-      throw 'invalid observe target'
-    model.on "change:#{key}", callback
-
+# from Backbone.Events
 
 # Regular expression used to split event strings.
 eventSplitter = /\s+/;
 
+# Utils
 array = []
 push = array.push
 slice = array.slice
 splice = array.splice
 
+# https://github.com/jashkenas/underscore/blob/master/underscore.js#L743
 _once = (func) ->
   ran = false
   memo = null
@@ -78,8 +57,7 @@ triggerEvents = (events, args) ->
     when 3 then while (++i < l) then (ev = events[i]).callback.call(ev.ctx, a1, a2, a3)
     else while (++i < l) then (ev = events[i]).callback.apply(ev.ctx, args)
 
-# from Backbone.Events
-Events = Horn.Events =
+Events = Horn.Utils.Events =
   on: (name, callback, context) ->
     if not eventsApi(@, 'on', name, [callback, context]) or not callback
       return @
@@ -177,9 +155,3 @@ for method, implementation of listenMethods then do (implementation, method) ->
     if not callback and (typeof name) is 'object' then callback = @
     obj[implementation](name, callback, this)
     @
-
-class E
-  Horn.Utils.extend @prototype, Events
-
-window.e = new E
-e.on 'hoge', -> console.log 'hoge'
