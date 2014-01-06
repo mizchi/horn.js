@@ -1,5 +1,5 @@
 (function() {
-  var Events, array, eventSplitter, eventsApi, extend, implementation, listenMethods, method, push, slice, splice, triggerEvents, _fn, _once,
+  var Events, array, eventSplitter, eventsApi, extend, implementation, listenMethods, method, parseObjectiveLiteral, push, slice, splice, triggerEvents, _fn, _once, _ref,
     __slice = [].slice,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -15,6 +15,18 @@
     for (name in mixin) {
       method = mixin[name];
       obj[name] = method;
+    }
+    return obj;
+  };
+
+  Horn.Utils.parseObjectiveLiteral = function(str) {
+    var key, obj, val, _i, _len, _ref, _ref1;
+    obj = {};
+    _ref = str.replace(/\s|\n/g, '').split(',');
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      key = _ref[_i];
+      _ref1 = key.split(':'), key = _ref1[0], val = _ref1[1];
+      obj[key] = val;
     }
     return obj;
   };
@@ -309,7 +321,7 @@
     }
   };
 
-  extend = Horn.Utils.extend;
+  _ref = Horn.Utils, extend = _ref.extend, parseObjectiveLiteral = _ref.parseObjectiveLiteral;
 
   Horn.templates = {};
 
@@ -347,15 +359,15 @@
 
   Horn.addDirectiveByEachValue = function(name, fn) {
     return Horn.directives[name] = function(view) {
-      var attr, _i, _len, _ref, _results,
+      var attr, _i, _len, _ref1, _results,
         _this = this;
-      _ref = view.attrs;
+      _ref1 = view.attrs;
       _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        attr = _ref[_i];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        attr = _ref1[_i];
         _results.push((function(attr) {
           var $el;
-          $el = view._$("[" + name + "=" + attr + "]");
+          $el = view._$("[" + name + "='" + attr + "']");
           return fn(view, $el, attr);
         })(attr));
       }
@@ -370,20 +382,34 @@
     });
   });
 
+  Horn.addDirectiveByEachElement("data-observe", function(view, $el, val) {
+    var funcName, valName, _ref1, _results,
+      _this = this;
+    _ref1 = parseObjectiveLiteral(val);
+    _results = [];
+    for (valName in _ref1) {
+      funcName = _ref1[valName];
+      _results.push(view.on("change:" + valName, function() {
+        return view[funcName]();
+      }));
+    }
+    return _results;
+  });
+
   Horn.addDirectiveByEachElement("data-click", function(view, $el, val) {
     return $el.on('click', view[val].bind(view));
   });
 
   Horn.addDirective("data-visible", function(view) {
-    var attr, _i, _len, _ref, _results,
+    var attr, _i, _len, _ref1, _results,
       _this = this;
-    _ref = view.attrs;
+    _ref1 = view.attrs;
     _results = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      attr = _ref[_i];
+    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+      attr = _ref1[_i];
       _results.push((function(attr) {
         var $els, update;
-        $els = view._$("[data-visible=" + attr + "]");
+        $els = view._$("[data-visible='" + attr + "']");
         (update = function() {
           return $els.each(function(index) {
             var $el;
@@ -402,22 +428,12 @@
   });
 
   Horn.addDirectiveByEachElement("data-view", function(view, $el, val) {
-    var Cls, cv, data, propertyName, templateName, viewNames, _results;
+    var Cls, cv, propertyName, templateName, viewNames, _ref1, _results;
     viewNames = view.$el.attr('data-views').replace(/\s/g, '').split(',');
-    data = (function() {
-      var key, obj, _i, _len, _ref, _ref1;
-      obj = {};
-      _ref = val.replace(/\s|\n/g, '').split(',');
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        key = _ref[_i];
-        _ref1 = key.split(':'), key = _ref1[0], val = _ref1[1];
-        obj[key] = val;
-      }
-      return obj;
-    })();
+    _ref1 = parseObjectiveLiteral(val);
     _results = [];
-    for (templateName in data) {
-      propertyName = data[templateName];
+    for (templateName in _ref1) {
+      propertyName = _ref1[templateName];
       Cls = view.viewClassMapping[templateName]();
       cv = new Cls;
       cv.attach($el);
@@ -427,29 +443,19 @@
   });
 
   Horn.addDirectiveByEachElement("data-list-view", function(view, $el, val) {
-    var Cls, cv, data, propertyName, templateName, viewNames, _ref, _results;
+    var Cls, cv, propertyName, templateName, viewNames, _ref1, _ref2, _results;
     viewNames = view.$el.attr('data-views').replace(/\s/g, '').split(',');
-    data = (function() {
-      var key, obj, _i, _len, _ref, _ref1;
-      obj = {};
-      _ref = val.replace(/\s|\n/g, '').split(',');
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        key = _ref[_i];
-        _ref1 = key.split(':'), key = _ref1[0], val = _ref1[1];
-        obj[key] = val;
-      }
-      return obj;
-    })();
+    _ref1 = parseObjectiveLiteral(val);
     _results = [];
-    for (templateName in data) {
-      propertyName = data[templateName];
+    for (templateName in _ref1) {
+      propertyName = _ref1[templateName];
       Cls = view.viewClassMapping[templateName]();
       cv = new ((function(_super) {
         __extends(_Class, _super);
 
         function _Class() {
-          _ref = _Class.__super__.constructor.apply(this, arguments);
-          return _ref;
+          _ref2 = _Class.__super__.constructor.apply(this, arguments);
+          return _ref2;
         }
 
         _Class.prototype.itemView = Cls;
@@ -473,17 +479,17 @@
     extend(View.prototype, Horn.Traits.Removable);
 
     function View() {
-      var attr, func, name, _i, _len, _ref, _ref1;
+      var attr, func, name, _i, _len, _ref1, _ref2;
       this.$el = Horn.templates[this.templateName].clone();
       this.attrs = this.$el.data('attrs').replace(/\s/g, '').split(',');
-      _ref = this.attrs;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        attr = _ref[_i];
+      _ref1 = this.attrs;
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        attr = _ref1[_i];
         this.property(attr);
       }
-      _ref1 = Horn.directives;
-      for (name in _ref1) {
-        func = _ref1[name];
+      _ref2 = Horn.directives;
+      for (name in _ref2) {
+        func = _ref2[name];
         if (Horn.raw_templates[this.templateName].indexOf(name) > -1) {
           func(this);
         }
@@ -577,19 +583,19 @@
     };
 
     ListView.prototype.size = function(n) {
-      var i, _i, _j, _ref, _ref1, _results, _results1;
+      var i, _i, _j, _ref1, _ref2, _results, _results1;
       if (n == null) {
         return this.views.length;
       }
       if (this.views.length > n) {
         _results = [];
-        for (i = _i = 1, _ref = this.views.length - n; 1 <= _ref ? _i <= _ref : _i >= _ref; i = 1 <= _ref ? ++_i : --_i) {
+        for (i = _i = 1, _ref1 = this.views.length - n; 1 <= _ref1 ? _i <= _ref1 : _i >= _ref1; i = 1 <= _ref1 ? ++_i : --_i) {
           _results.push(this.views.pop().remove());
         }
         return _results;
       } else if (this.views.length < n) {
         _results1 = [];
-        for (i = _j = 1, _ref1 = n - this.views.length; 1 <= _ref1 ? _j <= _ref1 : _j >= _ref1; i = 1 <= _ref1 ? ++_j : --_j) {
+        for (i = _j = 1, _ref2 = n - this.views.length; 1 <= _ref2 ? _j <= _ref2 : _j >= _ref2; i = 1 <= _ref2 ? ++_j : --_j) {
           _results1.push(this.addItem());
         }
         return _results1;
@@ -601,15 +607,15 @@
     };
 
     ListView.prototype.toJSON = function() {
-      var index, item, key, view, _i, _j, _len, _len1, _ref, _ref1, _results;
-      _ref = this.views;
+      var index, item, key, view, _i, _j, _len, _len1, _ref1, _ref2, _results;
+      _ref1 = this.views;
       _results = [];
-      for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
-        view = _ref[index];
+      for (index = _i = 0, _len = _ref1.length; _i < _len; index = ++_i) {
+        view = _ref1[index];
         item = {};
-        _ref1 = view.attrs;
-        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-          key = _ref1[_j];
+        _ref2 = view.attrs;
+        for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+          key = _ref2[_j];
           item[key] = view[key];
         }
         _results.push(item);
@@ -618,17 +624,17 @@
     };
 
     ListView.prototype.update = function(items) {
-      var index, item, key, view, _i, _j, _len, _len1, _ref, _ref1;
+      var index, item, key, view, _i, _j, _len, _len1, _ref1, _ref2;
       if (items.length !== this.views.length) {
         this.size(items.length);
       }
-      _ref = this.views;
-      for (index = _i = 0, _len = _ref.length; _i < _len; index = ++_i) {
-        view = _ref[index];
+      _ref1 = this.views;
+      for (index = _i = 0, _len = _ref1.length; _i < _len; index = ++_i) {
+        view = _ref1[index];
         item = items[index];
-        _ref1 = view.attrs;
-        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-          key = _ref1[_j];
+        _ref2 = view.attrs;
+        for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+          key = _ref2[_j];
           if (item[key] != null) {
             view[key] = item[key];
           }

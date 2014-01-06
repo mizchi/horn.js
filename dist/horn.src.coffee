@@ -7,6 +7,13 @@ Horn.Utils.extend = (obj, mixin) ->
   obj[name] = method for name, method of mixin
   obj
 
+Horn.Utils.parseObjectiveLiteral = (str)->
+  obj = {}
+  for key in str.replace(/\s|\n/g, '').split(',')
+    [key, val] = key.split(':')
+    obj[key] = val
+  obj
+
 # from Backbone.Events
 
 # Regular expression used to split event strings.
@@ -202,7 +209,7 @@ Horn.Traits.Removable =
     @$el.detach()
 
 
-{extend} = Horn.Utils
+{extend, parseObjectiveLiteral} = Horn.Utils
 
 Horn.templates = {}
 Horn.raw_templates = {}
@@ -228,19 +235,23 @@ Horn.addDirectiveByEachElement = (name, fn) ->
 Horn.addDirectiveByEachValue = (name, fn) ->
   Horn.directives[name] = (view) ->
     for attr in view.attrs then do (attr) =>
-      $el = view._$("[#{name}=#{attr}]")
+      $el = view._$("[#{name}='#{attr}']")
       fn view, $el, attr
 
 # === Defaut Directives ===
 Horn.addDirectiveByEachValue "data-text", (view, $el, val) ->
   view.on "change:#{val}", => $el.text view[val]
 
+Horn.addDirectiveByEachElement "data-observe", (view, $el, val) ->
+  for valName, funcName of parseObjectiveLiteral val
+    view.on "change:#{valName}", => view[funcName]()
+
 Horn.addDirectiveByEachElement "data-click", (view, $el, val) ->
   $el.on 'click', (view[val].bind view)
 
 Horn.addDirective "data-visible", (view) ->
   for attr in view.attrs then do (attr) =>
-    $els = view._$("[data-visible=#{attr}]")
+    $els = view._$("[data-visible='#{attr}']")
     do update = ->
       $els.each (index) ->
         $el = $(@)
@@ -249,14 +260,7 @@ Horn.addDirective "data-visible", (view) ->
 
 Horn.addDirectiveByEachElement "data-view", (view, $el, val) ->
   viewNames = view.$el.attr('data-views').replace(/\s/g, '').split(',')
-  data = do ->
-    obj = {}
-    for key in val.replace(/\s|\n/g, '').split(',')
-      [key, val] = key.split(':')
-      obj[key] = val
-    obj
-
-  for templateName, propertyName of data
+  for templateName, propertyName of parseObjectiveLiteral val
     Cls = view.viewClassMapping[templateName]()
     cv = new Cls
     cv.attach $el
@@ -264,14 +268,7 @@ Horn.addDirectiveByEachElement "data-view", (view, $el, val) ->
 
 Horn.addDirectiveByEachElement "data-list-view", (view, $el, val) ->
   viewNames = view.$el.attr('data-views').replace(/\s/g, '').split(',')
-  data = do ->
-    obj = {}
-    for key in val.replace(/\s|\n/g, '').split(',')
-      [key, val] = key.split(':')
-      obj[key] = val
-    obj
-
-  for templateName, propertyName of data
+  for templateName, propertyName of parseObjectiveLiteral val
     Cls = view.viewClassMapping[templateName]()
     cv = new class extends Horn.ListView
       itemView: Cls
