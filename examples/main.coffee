@@ -7,22 +7,11 @@ Horn.addDirective "data-click-with-trigger", (view) ->
 
 Horn.registerTemplate """
   <div
-    data-template-name="layout"
-    data-views="status, statusList"
-    data-attrs="">
-    <h1>layout</h1>
-    <div data-view='status:status'/>
-    <div data-list-view='status:statusList'/>
-  </div>
-"""
-
-Horn.registerTemplate """
-  <div
     data-template-name="status"
     data-attrs="name, money, showAddMoney">
-
     <span data-text="name">NO NAME</span>
     <span data-text="money">0</span>
+    <span data-observe="money:xxx"></span>
     <button data-click-with-trigger="update">update</button>
     <button data-click="dispose">dispose</button>
     <button data-click="toggleShowAddMoney">toggle show add money</button>
@@ -45,11 +34,6 @@ Horn.addDirectiveByEachElement "data-view", (view, $el, val) ->
     cv.attach $el
     @[propertyName] = cv
 
-class Layout extends Horn.View
-  templateName: 'layout'
-  viewClassMapping:
-    status: -> Status
-
 class Status extends Horn.View
   templateName: 'status'
   addMoney: ->
@@ -58,18 +42,17 @@ class Status extends Horn.View
   toggleShowAddMoney: ->
     @showAddMoney = !@showAddMoney
 
+  xxx: ->
+    console.log 'xxxxxxxxxxxx'
+
 class StatusList extends Horn.ListView
   itemView: Status
 
 $ ->
-  layout = new Layout
-  layout.attach 'body'
-
   # View
   status = new Status
   status.name = 'foo'
   status.money = 0
-
   status.attach 'body'
   status.on 'update', -> console.log 'updated'
 
