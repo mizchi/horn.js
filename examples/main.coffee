@@ -13,6 +13,7 @@ Horn.registerTemplate """
     <span data-text="name">NO NAME</span>
     <span data-text="money">0</span>
     <button data-click-with-trigger="update">update</button>
+    <button data-click="dispose">dispose</button>
     <button data-click="toggleShowAddMoney">toggle show add money</button>
     <button data-visible="showAddMoney" data-click="addMoney">addMoney</button>
   </div>

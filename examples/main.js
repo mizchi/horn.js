@@ -15,7 +15,7 @@
     });
   });
 
-  Horn.registerTemplate("<div\n  data-template-name=\"my-status\"\n  data-attrs=\"name, money, showAddMoney\">\n\n  <span data-text=\"name\">NO NAME</span>\n  <span data-text=\"money\">0</span>\n  <button data-click-with-trigger=\"update\">update</button>\n  <button data-click=\"toggleShowAddMoney\">toggle show add money</button>\n  <button data-visible=\"showAddMoney\" data-click=\"addMoney\">addMoney</button>\n</div>");
+  Horn.registerTemplate("<div\n  data-template-name=\"my-status\"\n  data-attrs=\"name, money, showAddMoney\">\n\n  <span data-text=\"name\">NO NAME</span>\n  <span data-text=\"money\">0</span>\n  <button data-click-with-trigger=\"update\">update</button>\n  <button data-click=\"dispose\">dispose</button>\n  <button data-click=\"toggleShowAddMoney\">toggle show add money</button>\n  <button data-visible=\"showAddMoney\" data-click=\"addMoney\">addMoney</button>\n</div>");
 
   Status = (function(_super) {
     __extends(Status, _super);
