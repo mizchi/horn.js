@@ -252,7 +252,7 @@ triggerEvents = (events, args) ->
     when 3 then while (++i < l) then (ev = events[i]).callback.call(ev.ctx, a1, a2, a3)
     else while (++i < l) then (ev = events[i]).callback.apply(ev.ctx, args)
 
-Events = Horn.Utils.Events =
+Events = Horn.Traits.Events =
   on: (name, callback, context) ->
     if not eventsApi(@, 'on', name, [callback, context]) or not callback
       return @
@@ -351,20 +351,6 @@ for method, implementation of listenMethods then do (implementation, method) ->
     obj[implementation](name, callback, this)
     @
 
-class E
-  Horn.Utils.extend @prototype, Events
-
-window.e = new E
-e.once 'fuga', ->
-  console.log 'fuga'
-  1
-
-e.on 'hoge', (a) -> console.log 'hoge', a
-
-e.trigger 'hoge', 'year'
-e.trigger 'fuga'
-e.trigger 'fuga'
-
 Horn.Traits.Querified =
   css: -> @$el.css arguments...
   selectorCss: (selector, args...) -> @$(selector).css args...
@@ -440,8 +426,8 @@ Horn.addDirective "data-visible", (view) ->
 {extend} = Horn.Utils
 # View class
 class Horn.View
+  extend @prototype, Horn.Traits.Events
   extend @prototype, Horn.Traits.Querified
-  extend @prototype, Horn.Traits.Dispatchable
   extend @prototype, Horn.Traits.Removable
 
   constructor: ->
@@ -451,7 +437,7 @@ class Horn.View
     for name, func of Horn.directives then func @
 
   dispose: ->
-    if @parent? then @parent.publish('child:disposed', @)
+    if @parent? then @parent.trigger 'child:disposed', @
     @disposed = true
     @remove()
 
@@ -465,15 +451,15 @@ class Horn.View
         if v isnt @['_'+key]
           @['_' + key] = v
           @trigger "change:#{key}"
-          if @parent? then @parent.publish('child:changed', @)
+          if @parent? then @parent.trigger 'child:changed', @
 
     @['_'+key] = orig ? null
 
 {extend} = Horn.Utils
 # List View Class
 class Horn.ListView
+  extend @prototype, Horn.Traits.Events
   extend @prototype, Horn.Traits.Querified
-  extend @prototype, Horn.Traits.Dispatchable
   extend @prototype, Horn.Traits.Removable
   className: 'div'
 
@@ -499,6 +485,12 @@ class Horn.ListView
       view[k] = v
     @views.push view
     view.attach @
+
+  each: (f) ->
+    @view.forEach f
+
+  eachElement: (f) ->
+    @view.forEach (v) -> f(v.$el)
 
   size: (n) ->
     return @views.length unless n?

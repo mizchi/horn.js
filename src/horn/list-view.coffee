@@ -1,8 +1,8 @@
 {extend} = Horn.Utils
 # List View Class
 class Horn.ListView
+  extend @prototype, Horn.Traits.Events
   extend @prototype, Horn.Traits.Querified
-  extend @prototype, Horn.Traits.Dispatchable
   extend @prototype, Horn.Traits.Removable
   className: 'div'
 
@@ -28,6 +28,12 @@ class Horn.ListView
       view[k] = v
     @views.push view
     view.attach @
+
+  each: (f) ->
+    @view.forEach f
+
+  eachElement: (f) ->
+    @view.forEach (v) -> f(v.$el)
 
   size: (n) ->
     return @views.length unless n?

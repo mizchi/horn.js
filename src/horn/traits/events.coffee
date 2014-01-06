@@ -57,7 +57,7 @@ triggerEvents = (events, args) ->
     when 3 then while (++i < l) then (ev = events[i]).callback.call(ev.ctx, a1, a2, a3)
     else while (++i < l) then (ev = events[i]).callback.apply(ev.ctx, args)
 
-Events = Horn.Utils.Events =
+Events = Horn.Traits.Events =
   on: (name, callback, context) ->
     if not eventsApi(@, 'on', name, [callback, context]) or not callback
       return @

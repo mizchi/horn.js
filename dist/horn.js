@@ -379,7 +379,7 @@
     }
   };
 
-  Events = Horn.Utils.Events = {
+  Events = Horn.Traits.Events = {
     on: function(name, callback, context) {
       var events;
       if (!eventsApi(this, 'on', name, [callback, context]) || !callback) {
@@ -506,32 +506,6 @@
     implementation = listenMethods[method];
     _fn1(implementation, method);
   }
-
-  E = (function() {
-    function E() {}
-
-    Horn.Utils.extend(E.prototype, Events);
-
-    return E;
-
-  })();
-
-  window.e = new E;
-
-  e.once('fuga', function() {
-    console.log('fuga');
-    return 1;
-  });
-
-  e.on('hoge', function(a) {
-    return console.log('hoge', a);
-  });
-
-  e.trigger('hoge', 'year');
-
-  e.trigger('fuga');
-
-  e.trigger('fuga');
 
   Horn.Traits.Querified = {
     css: function() {
@@ -682,9 +656,9 @@
   extend = Horn.Utils.extend;
 
   Horn.View = (function() {
-    extend(View.prototype, Horn.Traits.Querified);
+    extend(View.prototype, Horn.Traits.Events);
 
-    extend(View.prototype, Horn.Traits.Dispatchable);
+    extend(View.prototype, Horn.Traits.Querified);
 
     extend(View.prototype, Horn.Traits.Removable);
 
@@ -706,7 +680,7 @@
 
     View.prototype.dispose = function() {
       if (this.parent != null) {
-        this.parent.publish('child:disposed', this);
+        this.parent.trigger('child:disposed', this);
       }
       this.disposed = true;
       return this.remove();
@@ -726,7 +700,7 @@
             this['_' + key] = v;
             this.trigger("change:" + key);
             if (this.parent != null) {
-              return this.parent.publish('child:changed', this);
+              return this.parent.trigger('child:changed', this);
             }
           }
         }
@@ -741,9 +715,9 @@
   extend = Horn.Utils.extend;
 
   Horn.ListView = (function() {
-    extend(ListView.prototype, Horn.Traits.Querified);
+    extend(ListView.prototype, Horn.Traits.Events);
 
-    extend(ListView.prototype, Horn.Traits.Dispatchable);
+    extend(ListView.prototype, Horn.Traits.Querified);
 
     extend(ListView.prototype, Horn.Traits.Removable);
 
@@ -778,6 +752,16 @@
       }
       this.views.push(view);
       return view.attach(this);
+    };
+
+    ListView.prototype.each = function(f) {
+      return this.view.forEach(f);
+    };
+
+    ListView.prototype.eachElement = function(f) {
+      return this.view.forEach(function(v) {
+        return f(v.$el);
+      });
     };
 
     ListView.prototype.size = function(n) {

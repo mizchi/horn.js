@@ -1,8 +1,8 @@
 {extend} = Horn.Utils
 # View class
 class Horn.View
+  extend @prototype, Horn.Traits.Events
   extend @prototype, Horn.Traits.Querified
-  extend @prototype, Horn.Traits.Dispatchable
   extend @prototype, Horn.Traits.Removable
 
   constructor: ->
@@ -12,7 +12,7 @@ class Horn.View
     for name, func of Horn.directives then func @
 
   dispose: ->
-    if @parent? then @parent.publish('child:disposed', @)
+    if @parent? then @parent.trigger 'child:disposed', @
     @disposed = true
     @remove()
 
@@ -26,6 +26,6 @@ class Horn.View
         if v isnt @['_'+key]
           @['_' + key] = v
           @trigger "change:#{key}"
-          if @parent? then @parent.publish('child:changed', @)
+          if @parent? then @parent.trigger 'child:changed', @
 
     @['_'+key] = orig ? null
