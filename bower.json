@@ -1,6 +1,6 @@
 {
   "name": "horn",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "dist/horn.js",
   "authors": [
     "Koutarou Chikuba <miz404@gmail.com>"
