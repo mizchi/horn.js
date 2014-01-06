@@ -9,7 +9,10 @@ class Horn.View
     @$el = Horn.templates[@templateName].clone()
     @attrs = @$el.data('attrs').replace(/\s/g, '').split(',')
     for attr in @attrs then @property attr
-    for name, func of Horn.directives then func @
+
+    # reject unused directive
+    for name, func of Horn.directives when Horn.raw_templates[@templateName].indexOf(name) > -1
+      func @
 
   dispose: ->
     if @parent? then @parent.trigger 'child:disposed', @

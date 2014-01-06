@@ -205,12 +205,13 @@ Horn.Traits.Removable =
 {extend} = Horn.Utils
 
 Horn.templates = {}
+Horn.raw_templates = {}
 Horn.registerTemplate = (str) ->
   $el = $(str).eq(0)
   name = $el.data('template-name')
   throw "data-template-name is not defined" unless name
   Horn.templates[name] = $el
-  return
+  Horn.raw_templates[name] = str
 
 Horn.directives = {}
 Horn.addDirective = (name, fn) ->
@@ -257,7 +258,11 @@ class Horn.View
     @$el = Horn.templates[@templateName].clone()
     @attrs = @$el.data('attrs').replace(/\s/g, '').split(',')
     for attr in @attrs then @property attr
-    for name, func of Horn.directives then func @
+
+    # reject unused directive
+    for name, func of Horn.directives
+      if Horn.raw_templates[@templateName].indexOf(name) > -1
+        func @
 
   dispose: ->
     if @parent? then @parent.trigger 'child:disposed', @

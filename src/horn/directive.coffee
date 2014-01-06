@@ -1,12 +1,13 @@
 {extend} = Horn.Utils
 
 Horn.templates = {}
+Horn.raw_templates = {}
 Horn.registerTemplate = (str) ->
   $el = $(str).eq(0)
   name = $el.data('template-name')
   throw "data-template-name is not defined" unless name
   Horn.templates[name] = $el
-  return
+  Horn.raw_templates[name] = str
 
 Horn.directives = {}
 Horn.addDirective = (name, fn) ->

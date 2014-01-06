@@ -311,6 +311,8 @@
 
   Horn.templates = {};
 
+  Horn.raw_templates = {};
+
   Horn.registerTemplate = function(str) {
     var $el, name;
     $el = $(str).eq(0);
@@ -319,6 +321,7 @@
       throw "data-template-name is not defined";
     }
     Horn.templates[name] = $el;
+    return Horn.raw_templates[name] = str;
   };
 
   Horn.directives = {};
@@ -417,7 +420,9 @@
       _ref1 = Horn.directives;
       for (name in _ref1) {
         func = _ref1[name];
-        func(this);
+        if (Horn.raw_templates[this.templateName].indexOf(name) > -1) {
+          func(this);
+        }
       }
     }
 
