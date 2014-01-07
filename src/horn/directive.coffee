@@ -48,18 +48,18 @@ Horn.addDirective "data-visible", (view) ->
     view.on "change:#{attr}", update
 
 Horn.addDirectiveByEachElement "data-view", (view, $el, val) ->
-  viewNames = view.$el.attr('data-views').replace(/\s/g, '').split(',')
-  for templateName, propertyName of parseObjectiveLiteral val
-    Cls = view.viewClassMapping[templateName]()
-    cv = new Cls
-    cv.attach $el
-    view[propertyName] = cv
+  # viewNames = view.$el.attr('data-child-views').replace(/\s/g, '').split(',')
+  data = parseObjectiveLiteral(val)
+  Cls = view.viewClassMapping[data.class]()
+  cv = new Cls
+  cv.attach $el
+  view[data.attr] = cv
 
 Horn.addDirectiveByEachElement "data-list-view", (view, $el, val) ->
-  viewNames = view.$el.attr('data-views').replace(/\s/g, '').split(',')
-  for templateName, propertyName of parseObjectiveLiteral val
-    Cls = view.viewClassMapping[templateName]()
-    cv = new class extends Horn.ListView
-      itemView: Cls
-    cv.attach $el
-    view[propertyName] = cv
+  # viewNames = view.$el.attr('data-child-views').replace(/\s/g, '').split(',')
+  data = parseObjectiveLiteral val
+  Cls = view.viewClassMapping[data.class]()
+  cv = new class extends Horn.ListView
+    itemView: Cls
+  cv.attach $el
+  view[data.attr] = cv

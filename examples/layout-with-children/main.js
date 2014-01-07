@@ -15,7 +15,7 @@
     });
   });
 
-  Horn.registerTemplate("<div\n  data-template-name=\"layout\"\n  data-views=\"status, statusList\"\n  data-attrs=\"\">\n  <h1>layout</h1>\n  <div data-view='status:status'/>\n  <div data-list-view='status:statusList'/>\n</div>");
+  Horn.registerTemplate("<div\n  data-template-name=\"layout\"\n  data-child-views=\"status, statusList\"\n  data-attrs=\"\">\n  <h1>layout</h1>\n  <div data-view='attr:status, class:status'/>\n  <div data-list-view='attr:statusList, class:status'/>\n</div>");
 
   Horn.registerTemplate("<div\n  data-template-name=\"status\"\n  data-attrs=\"name, money, showAddMoney\">\n\n  <span data-text=\"name\">NO NAME</span>\n  <span data-text=\"money\">0</span>\n  <button data-click-with-trigger=\"update\">update</button>\n  <button data-click=\"dispose\">dispose</button>\n  <button data-click=\"toggleShowAddMoney\">toggle show add money</button>\n  <button data-visible=\"showAddMoney\" data-click=\"addMoney\">addMoney</button>\n</div>");
 

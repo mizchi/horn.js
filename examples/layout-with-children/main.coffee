@@ -8,11 +8,11 @@ Horn.addDirective "data-click-with-trigger", (view) ->
 Horn.registerTemplate """
   <div
     data-template-name="layout"
-    data-views="status, statusList"
+    data-child-views="status, statusList"
     data-attrs="">
     <h1>layout</h1>
-    <div data-view='status:status'/>
-    <div data-list-view='status:statusList'/>
+    <div data-view='attr:status, class:status'/>
+    <div data-list-view='attr:statusList, class:status'/>
   </div>
 """
 

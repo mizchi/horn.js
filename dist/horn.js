@@ -428,45 +428,33 @@
   });
 
   Horn.addDirectiveByEachElement("data-view", function(view, $el, val) {
-    var Cls, cv, propertyName, templateName, viewNames, _ref1, _results;
-    viewNames = view.$el.attr('data-views').replace(/\s/g, '').split(',');
-    _ref1 = parseObjectiveLiteral(val);
-    _results = [];
-    for (templateName in _ref1) {
-      propertyName = _ref1[templateName];
-      Cls = view.viewClassMapping[templateName]();
-      cv = new Cls;
-      cv.attach($el);
-      _results.push(view[propertyName] = cv);
-    }
-    return _results;
+    var Cls, cv, data;
+    data = parseObjectiveLiteral(val);
+    Cls = view.viewClassMapping[data["class"]]();
+    cv = new Cls;
+    cv.attach($el);
+    return view[data.attr] = cv;
   });
 
   Horn.addDirectiveByEachElement("data-list-view", function(view, $el, val) {
-    var Cls, cv, propertyName, templateName, viewNames, _ref1, _ref2, _results;
-    viewNames = view.$el.attr('data-views').replace(/\s/g, '').split(',');
-    _ref1 = parseObjectiveLiteral(val);
-    _results = [];
-    for (templateName in _ref1) {
-      propertyName = _ref1[templateName];
-      Cls = view.viewClassMapping[templateName]();
-      cv = new ((function(_super) {
-        __extends(_Class, _super);
+    var Cls, cv, data, _ref1;
+    data = parseObjectiveLiteral(val);
+    Cls = view.viewClassMapping[data["class"]]();
+    cv = new ((function(_super) {
+      __extends(_Class, _super);
 
-        function _Class() {
-          _ref2 = _Class.__super__.constructor.apply(this, arguments);
-          return _ref2;
-        }
+      function _Class() {
+        _ref1 = _Class.__super__.constructor.apply(this, arguments);
+        return _ref1;
+      }
 
-        _Class.prototype.itemView = Cls;
+      _Class.prototype.itemView = Cls;
 
-        return _Class;
+      return _Class;
 
-      })(Horn.ListView));
-      cv.attach($el);
-      _results.push(view[propertyName] = cv);
-    }
-    return _results;
+    })(Horn.ListView));
+    cv.attach($el);
+    return view[data.attr] = cv;
   });
 
   extend = Horn.Utils.extend;
